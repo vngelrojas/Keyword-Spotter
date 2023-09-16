@@ -1,4 +1,7 @@
 import keras
+import json
+import numpy as np
+from sklearn.model_selection import train_test_split
 
 DATA_PATH = "data.json"
 SAVED_MODEL_PATH = "model.h5"
@@ -7,15 +10,31 @@ EPOCHS = 40 # number of times data is passed through the network for training
 BATCH_SIZE = 32
 
 def loadDataset(data_path):
-    pass
-
-def getDataSplits(data_path):
+    with open(data_path,"r") as fp:
+        data = json.load(fp)
+        
+    # extract inputs and targets
+    X = np.array(data["MFFCs"])# input
+    y = np.array(data["labels"]) # labels
+    
+    return X,y
+# test_size - 10% of the data set are going to be used for testing purposes
+def getDataSplits(data_path,test_size=0.1,test_validation=0.1):
     # load dataset
-     X,y = loadDataset(data_path)
+    X,y = loadDataset(data_path)
+    
     # create train/validation/test splits
+    X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=test_size)
+    X_train,X_validation,y_train,y_validation = train_test_split(X_train,y_train,test_size=test_validation)
     
     # convert inputs from 2d to 3d arrays
-    pass
+    # (num of segents,13 (num of MFCCs)) we want to add 1 as the third dimension
+    X_train = X_train[...,np.newaxis] # [...] means give me all the dimensions and ,np.newaxis adds the third dimension
+    X_validation = X_validation[...,np.newaxis]
+    X_test = X_test[...,np.newaxis]
+    
+    return X_train,X_validation,X_test,y_train,y_validation,y_test
+
 def main():
     # load train/validation/test data splits
     X_train,X_validation,X_test,y_train,y_validation,y_test = getDataSplits(DATA_PATH)
