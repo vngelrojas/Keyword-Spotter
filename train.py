@@ -6,7 +6,16 @@ LEARNING_RATE = 0.0001
 EPOCHS = 40 # number of times data is passed through the network for training
 BATCH_SIZE = 32
 
+def loadDataset(data_path):
+    pass
 
+def getDataSplits(data_path):
+    # load dataset
+     X,y = loadDataset(data_path)
+    # create train/validation/test splits
+    
+    # convert inputs from 2d to 3d arrays
+    pass
 def main():
     # load train/validation/test data splits
     X_train,X_validation,X_test,y_train,y_validation,y_test = getDataSplits(DATA_PATH)
